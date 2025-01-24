@@ -17,7 +17,17 @@ const PaymentDashboard: React.FC = () => {
   const [result, setResult] = useState<string>('');
 
   const handleCheckTransactions = () => {
-    if (target === null) return;
+    setResult('');
+
+    if (!target || target === null || typeof target !== 'number') {
+      setResult('Target is invalid.');
+      return;
+    }
+
+    if (target < 0) {
+      setResult('Target cannot be negative.');
+      return;
+    }
 
     for (let i = 0; i < transactions.length; i++) {
       for (let j = i + 1; j < transactions.length; j++) {
@@ -29,6 +39,7 @@ const PaymentDashboard: React.FC = () => {
         }
       }
     }
+
     setResult('No matching transactions found.');
   };
 
@@ -39,6 +50,8 @@ const PaymentDashboard: React.FC = () => {
   return (
     <div>
       <h1>Payment Transaction Dashboard</h1>
+
+      {/* Transactions List */}
       <ul>
         {transactions.map((transaction) => (
           <li key={transaction.id}>
@@ -46,12 +59,18 @@ const PaymentDashboard: React.FC = () => {
           </li>
         ))}
       </ul>
-      <input
-        type='number'
-        placeholder='Enter target amount'
-        onChange={(e) => setTarget(Number(e.target.value))}
-      />
-      <button onClick={handleCheckTransactions}>Check Transactions</button>
+
+      {/* Check transactions */}
+      <div>
+        <input
+          type='number'
+          placeholder='Enter Target Amount'
+          className='text-black'
+          onChange={(e) => setTarget(Number(e.target.value))}
+        />
+        <button onClick={handleCheckTransactions}>Check Transactions</button>
+      </div>
+
       <p>{result}</p>
     </div>
   );
