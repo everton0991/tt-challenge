@@ -3,7 +3,7 @@
 ## Description
 
 Payment Dashboard challenge.
-You can preview here https://tt-challenge.netlify.app/
+You can preview here [https://tt-challenge.netlify.app/](https://tt-challenge.netlify.app/)
 
 ## Features
 
