@@ -91,58 +91,87 @@ const PaymentDashboard: React.FC = () => {
 
   // TODO Add styling
   return (
-    <div>
-      <h1>Payment Transaction Dashboard</h1>
+    <div className='max-w-2xl mx-auto p-6 bg-gray-800 shadow-lg rounded-lg'>
+      <h1 className='text-2xl font-bold mb-4 text-white text-center'>
+        Payment Transaction Dashboard
+      </h1>
 
       {/* Transactions List */}
-      <ul>
+      <h2 className='text-xl font-semibold text-white mb-2'>
+        Transactions List
+      </h2>
+      <ul className='mb-4'>
         {transactions.map((transaction) => (
-          <li key={transaction.id}>
-            ID: {transaction.id}, Amount: ${transaction.amount}
+          <li
+            key={transaction.id}
+            className='flex justify-between items-center p-4 mb-2 border border-gray-600 bg-gray-700 rounded-lg hover:bg-gray-600 transition duration-200'
+          >
+            <span className='text-gray-300'>ID: {transaction.id}</span>
+            <span className='text-gray-300'>Amount: ${transaction.amount}</span>
           </li>
         ))}
-
-        <li>Total: ${total}</li>
+        <li className='flex justify-between items-center p-4 font-semibold text-gray-200 border border-gray-600 bg-gray-700 rounded-lg'>
+          <span>Total:</span>
+          <span>${total}</span>
+        </li>
       </ul>
 
+      {/* Divider */}
+      <hr className='border-gray-600 mb-4' />
+
       {/* Check transactions */}
-      <div>
+      <h2 className='text-xl font-semibold text-white mb-2'>
+        Check Transactions
+      </h2>
+      <div className='mb-4'>
         <input
           type='number'
-          name='amount-to-check'
           placeholder='Enter Target Amount'
-          className='text-black'
+          className='border border-gray-600 rounded p-2 w-full mb-2 bg-gray-700 text-white'
           onChange={(e) => setTarget(Number(e.target.value))}
         />
-        <button onClick={handleCheckTransactions}>Check Transactions</button>
+        <button
+          onClick={handleCheckTransactions}
+          className='w-full bg-blue-600 text-white rounded p-2 hover:bg-blue-500 transition duration-200'
+        >
+          Check Transactions
+        </button>
       </div>
 
-      {/* add New Transaction */}
-      <div>
+      {/* Divider */}
+      <hr className='border-gray-600 mb-4' />
+
+      {/* Add New Transaction */}
+      <h2 className='text-xl font-semibold text-white mb-2'>
+        Add New Transaction
+      </h2>
+      <div className='mb-4'>
         <input
           type='number'
-          name='transaction-id'
           placeholder='Enter Transaction ID'
-          className='text-black'
+          className='border border-gray-600 rounded p-2 w-full mb-2 bg-gray-700 text-white'
           onChange={(e) => setTransactionId(Number(e.target.value))}
         />
         <input
           type='number'
-          name='transaction-amount'
           placeholder='Enter Transaction Amount'
-          className='text-black'
+          className='border border-gray-600 rounded p-2 w-full mb-2 bg-gray-700 text-white'
           onChange={(e) => setTransactionAmount(Number(e.target.value))}
         />
         <button
           onClick={() => handleAddTransaction(transactionId, transactionAmount)}
+          className='w-full bg-green-600 text-white rounded p-2 hover:bg-green-500 transition duration-200'
         >
           Add New Transaction
         </button>
       </div>
 
-      <div>
-        <p>{result}</p>
-      </div>
+      {/* Result Message */}
+      {result && (
+        <div className='mt-4 text-center text-red-400'>
+          <p>{result}</p>
+        </div>
+      )}
     </div>
   );
 };
