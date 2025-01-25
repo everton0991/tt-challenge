@@ -71,6 +71,8 @@ const PaymentDashboard: React.FC = () => {
   };
 
   const handleAddTransaction = (id?: number, amount?: number) => {
+    setMessage({ error: false, message: '' });
+
     if (id === undefined) {
       setMessage({ error: true, message: ERROR_MESSAGES.NULL_ID });
       return;
