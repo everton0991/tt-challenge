@@ -1,5 +1,6 @@
 'use client';
 
+import { ERROR_MESSAGES } from '@/constants/ErrorMessages';
 import React, { useState } from 'react';
 
 interface Transaction {
@@ -13,53 +14,77 @@ const PaymentDashboard: React.FC = () => {
     { id: 2, amount: 150 },
     { id: 3, amount: 200 },
   ]);
-  const [target, setTarget] = useState<number | null>(null);
-  const [transactionId, setTransactionId] = useState<number | null>(null);
-  const [transactionAmount, setTransactionAmount] = useState<number | null>(
-    null
+
+  const [target, setTarget] = useState<number | undefined>(undefined);
+  const [transactionId, setTransactionId] = useState<number | undefined>(
+    undefined
   );
-  const [result, setResult] = useState<string>('');
-  const total = transactions.reduce((accumulator, current) => {
-    return accumulator + current.amount;
-  }, 0);
+  const [transactionAmount, setTransactionAmount] = useState<
+    number | undefined
+  >(undefined);
+  const [result, setResultMessage] = useState<string>('');
+
+  const total = transactions.reduce(
+    (accumulator, current) => accumulator + current.amount,
+    0
+  );
 
   const handleCheckTransactions = () => {
-    setResult('');
+    setResultMessage('');
 
-    if (!target || target === null || typeof target !== 'number') {
-      setResult('Target is invalid.');
+    if (target === undefined || typeof target !== 'number') {
+      setResultMessage(ERROR_MESSAGES.INVALID_TARGET);
       return;
     }
 
     if (target < 0) {
-      setResult('Target cannot be negative.');
+      setResultMessage(ERROR_MESSAGES.NEGATIVE_TARGET);
       return;
     }
 
-    // TODO - Refactor this
-    for (let i = 0; i < transactions.length; i++) {
-      for (let j = i + 1; j < transactions.length; j++) {
-        if (transactions[i].amount + transactions[j].amount === target) {
-          setResult(
-            `Transactions ${transactions[i].id} and ${transactions[j].id} add up to ${target}`
+    const amountsSet = new Set<number>();
+
+    for (const transaction of transactions) {
+      const complement = target - transaction.amount;
+
+      if (amountsSet.has(complement)) {
+        const matchingTransaction = transactions.find(
+          (t) => t.amount === complement
+        );
+
+        if (matchingTransaction) {
+          setResultMessage(
+            `Transactions ${matchingTransaction.id} and ${transaction.id} add up to ${target}`
           );
           return;
         }
       }
+      amountsSet.add(transaction.amount);
     }
 
-    setResult('No matching transactions found.');
+    setResultMessage(ERROR_MESSAGES.NO_MATCHING_TRANSACTIONS);
   };
 
-  // TODO - Create new input for new transactions
-  const handleAddTransaction = (id: number | null, amount: number | null) => {
-    if (id === null) {
-      return setResult('Parameter ID cannot be null.');
+  const handleAddTransaction = (id?: number, amount?: number) => {
+    if (id === undefined) {
+      setResultMessage(ERROR_MESSAGES.NULL_ID);
+      return;
     }
-    if (amount === null) {
-      return setResult('Parameter Amount cannot be null.');
+
+    if (amount === undefined || amount < 0) {
+      setResultMessage(ERROR_MESSAGES.NULL_OR_NEGATIVE_AMOUNT);
+      return;
     }
+
+    if (transactions.some((transaction) => transaction.id === id)) {
+      setResultMessage(ERROR_MESSAGES.ID_EXISTS(id));
+      return;
+    }
+
     setTransactions([...transactions, { id, amount }]);
+    // Reset input fields after adding
+    setTransactionId(undefined);
+    setTransactionAmount(undefined);
   };
 
   console.log({ transactions });
